@@ -1,6 +1,6 @@
 // pages/ProductsPage.tsx
 import { useEffect, useState } from "react";
-import { Grid, Container, Typography } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import ProductCard from "../components/ProductCard";
 import { Product } from "../types";
 import MainLayout from "../layouts/MainLayout";
@@ -24,13 +24,26 @@ const ProductsPage = () => {
         <Typography variant="h4" gutterBottom>
           Products
         </Typography>
-        <Grid container spacing={4}>
+
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          gap={3}
+        >
           {products.map((product) => (
-            <Grid item key={product.id} xs={12} sm={6} md={4}>
+            <Box
+              key={product.id}
+              sx={{
+                flex: "1 1 calc(33.333% - 24px)",
+                minWidth: "280px",
+                maxWidth: "400px",
+              }}
+            >
               <ProductCard product={product} onDelete={handleDelete} />
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Container>
     </MainLayout>
   );

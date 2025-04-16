@@ -18,14 +18,6 @@ interface Product {
   thumbnail: string;
 }
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
-
-const TemporaryLayout = ({ children }: MainLayoutProps) => (
-  <div>{children}</div>
-);
-
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -33,7 +25,16 @@ const ProductDetail = () => {
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
       .then((res) => res.json())
-      .then((data) => setProduct(data))
+      .then((data) => {
+        // API javobini Product interfeysiga moslashtirish
+        setProduct({
+          id: data.id,
+          title: data.title,
+          description: data.description,
+          price: data.price,
+          thumbnail: data.thumbnail,
+        });
+      })
       .catch((error) => console.error("Error fetching product:", error));
   }, [id]);
 
@@ -56,15 +57,11 @@ const ProductDetail = () => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" }, // Mobil uchun vertikal, desktop uchun gorizontal
-            gap: 4, // Bo‘shliq (spacing)
+            flexDirection: { xs: "column", md: "row" },
+            gap: 4,
           }}
         >
-          <Box
-            sx={{
-              flex: { xs: "100%", md: "50%" }, // Mobil uchun 100%, desktop uchun 50%
-            }}
-          >
+          <Box sx={{ flex: { xs: "100%", md: "50%" } }}>
             <Card>
               <CardMedia
                 component="img"
@@ -79,11 +76,7 @@ const ProductDetail = () => {
               />
             </Card>
           </Box>
-          <Box
-            sx={{
-              flex: { xs: "100%", md: "50%" }, // Mobil uchun 100%, desktop uchun 50%
-            }}
-          >
+          <Box sx={{ flex: { xs: "100%", md: "50%" } }}>
             <Card>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
