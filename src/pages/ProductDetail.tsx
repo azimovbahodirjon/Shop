@@ -7,6 +7,9 @@ import {
   Card,
   CardMedia,
   CardContent,
+  CircularProgress,
+  Fade,
+  Chip,
 } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 
@@ -21,12 +24,12 @@ interface Product {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        // API javobini Product interfeysiga moslashtirish
         setProduct({
           id: data.id,
           title: data.title,
@@ -34,15 +37,31 @@ const ProductDetail = () => {
           price: data.price,
           thumbnail: data.thumbnail,
         });
+        setLoading(false);
       })
-      .catch((error) => console.error("Error fetching product:", error));
+      .catch((error) => {
+        console.error("Error fetching product:", error);
+        setLoading(false);
+      });
   }, [id]);
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <Container sx={{ mt: 10, display: "flex", justifyContent: "center" }}>
+          <CircularProgress size={50} color="primary" />
+        </Container>
+      </MainLayout>
+    );
+  }
 
   if (!product) {
     return (
       <MainLayout>
-        <Container>
-          <Typography variant="h6">Loading...</Typography>
+        <Container sx={{ mt: 10 }}>
+          <Typography variant="h6" color="error">
+            Product not found.
+          </Typography>
         </Container>
       </MainLayout>
     );
@@ -50,48 +69,74 @@ const ProductDetail = () => {
 
   return (
     <MainLayout>
-      <Container sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          {product.title}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            gap: 4,
-          }}
-        >
-          <Box sx={{ flex: { xs: "100%", md: "50%" } }}>
-            <Card>
-              <CardMedia
-                component="img"
-                image={product.thumbnail}
-                alt={product.title}
-                sx={{
-                  borderRadius: 2,
-                  maxHeight: 400,
-                  objectFit: "cover",
-                  boxShadow: 3,
-                }}
-              />
-            </Card>
+      <Container sx={{ mt: 6, mb: 4 }}>
+        <Fade in timeout={500}>
+          <Box>
+            <Typography variant="h3" fontWeight={700} gutterBottom>
+              {product.title}
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                gap: 5,
+                mt: 3,
+              }}
+            >
+              <Box sx={{ flex: 1 }}>
+                <Card elevation={4} sx={{ borderRadius: 3 }}>
+                  <CardMedia
+                    component="img"
+                    image={product.thumbnail}
+                    alt={product.title}
+                    sx={{
+                      borderRadius: 3,
+                      height: 400,
+                      objectFit: "cover",
+                    }}
+                  />
+                </Card>
+              </Box>
+
+              {/* Details */}
+              <Box sx={{ flex: 1 }}>
+                <Card elevation={3} sx={{ borderRadius: 3 }}>
+                  <CardContent>
+                    <Typography
+                      variant="h5"
+                      fontWeight={600}
+                      gutterBottom
+                      sx={{ mb: 2 }}
+                    >
+                      Description
+                    </Typography>
+
+                    <Typography
+                      variant="body1"
+                      color="text.secondary"
+                      sx={{ mb: 3 }}
+                    >
+                      {product.description}
+                    </Typography>
+
+                    <Chip
+                      label={`$${product.price}`}
+                      color="primary"
+                      sx={{
+                        fontSize: "1.2rem",
+                        fontWeight: 600,
+                        px: 2,
+                        py: 1,
+                        borderRadius: "8px",
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              </Box>
+            </Box>
           </Box>
-          <Box sx={{ flex: { xs: "100%", md: "50%" } }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  {product.title}
-                </Typography>
-                <Typography variant="body1" color="text.secondary" paragraph>
-                  {product.description}
-                </Typography>
-                <Typography variant="h6" color="primary">
-                  ${product.price}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
+        </Fade>
       </Container>
     </MainLayout>
   );

@@ -1,4 +1,3 @@
-// components/ProductCard.tsx
 import {
   Card,
   CardMedia,
@@ -31,9 +30,11 @@ const ProductCard = ({ product, onDelete }: Props) => {
         maxWidth: 345,
         transition: "transform 0.3s, box-shadow 0.3s",
         "&:hover": {
-          transform: "scale(1.03)",
-          boxShadow: 6,
+          transform: "scale(1.05)", // Slightly stronger hover effect
+          boxShadow: 10, // Increased box-shadow on hover
         },
+        borderRadius: 3, // Rounded corners for a modern look
+        boxShadow: 3, // Initial card shadow
       }}
     >
       <CardActionArea onClick={() => navigate(`/products/${product.id}`)}>
@@ -42,33 +43,67 @@ const ProductCard = ({ product, onDelete }: Props) => {
           height="180"
           image={product.thumbnail}
           alt={product.title}
+          sx={{
+            borderRadius: 3, // Rounded corners on the image
+            objectFit: "cover", // Ensures image is well-cropped
+          }}
         />
         <CardContent>
-          <Typography gutterBottom variant="h6" noWrap>
+          <Typography gutterBottom variant="h6" noWrap sx={{ fontWeight: 600 }}>
             {product.title}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
             {product.description}
           </Typography>
-          <Typography variant="subtitle1" sx={{ mt: 1 }}>
+          <Typography variant="subtitle1" sx={{ mt: 1, fontWeight: 700 }}>
             ${product.price}
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions disableSpacing>
-        <IconButton
-          onClick={() => setLiked(!liked)}
-          color={liked ? "error" : "default"}
-        >
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton onClick={() => onDelete?.(product.id)}>
-          <DeleteIcon />
-        </IconButton>
-        <Box flexGrow={1} />
-        <IconButton onClick={() => console.log("Add to cart:", product)}>
-          <AddShoppingCartIcon />
-        </IconButton>
+      <CardActions
+        disableSpacing
+        sx={{ display: "flex", justifyContent: "space-between", paddingX: 2 }}
+      >
+        <Box display="flex" alignItems="center">
+          <IconButton
+            onClick={() => setLiked(!liked)}
+            color={liked ? "error" : "default"}
+            sx={{
+              transition: "color 0.3s ease-in-out",
+              "&:hover": {
+                color: liked ? "red" : "rgba(0, 0, 0, 0.54)",
+              },
+            }}
+          >
+            <FavoriteIcon />
+          </IconButton>
+          {onDelete && (
+            <IconButton
+              onClick={() => onDelete?.(product.id)}
+              sx={{
+                transition: "color 0.3s ease-in-out",
+                "&:hover": {
+                  color: "rgba(255, 0, 0, 0.7)", // Delete icon hover effect
+                },
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
+        </Box>
+        <Box display="flex" alignItems="center">
+          <IconButton
+            onClick={() => console.log("Add to cart:", product)}
+            sx={{
+              transition: "color 0.3s ease-in-out",
+              "&:hover": {
+                color: "green", // Green color on hover for cart icon
+              },
+            }}
+          >
+            <AddShoppingCartIcon />
+          </IconButton>
+        </Box>
       </CardActions>
     </Card>
   );
