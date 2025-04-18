@@ -1,5 +1,4 @@
-// pages/About.tsx
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 
 const About = () => (
   <Container sx={{ mt: 4 }}>
