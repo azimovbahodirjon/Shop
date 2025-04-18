@@ -27,6 +27,7 @@ const ProductsPage = () => {
     "none"
   );
   const [categories, setCategories] = useState<string[]>([]);
+  console.log("hello");
 
   useEffect(() => {
     Promise.all([
